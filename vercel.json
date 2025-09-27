@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd echo-app-ideas && npm run build",
+  "outputDirectory": "echo-app-ideas/.next",
+  "installCommand": "cd echo-app-ideas && npm install",
+  "devCommand": "cd echo-app-ideas && npm run dev"
+}
