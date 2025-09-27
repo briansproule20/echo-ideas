@@ -42,10 +42,17 @@ const models = [
   {
     name: 'GPT 4o',
     value: 'gpt-4o',
+    provider: 'openai',
   },
   {
-    name: 'GPT 5',
-    value: 'gpt-5',
+    name: 'Claude Haiku',
+    value: 'claude-3-haiku-20240307',
+    provider: 'anthropic',
+  },
+  {
+    name: 'Claude Sonnet',
+    value: 'claude-3-5-sonnet-20241022',
+    provider: 'anthropic',
   },
 ];
 

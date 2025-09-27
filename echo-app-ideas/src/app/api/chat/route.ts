@@ -1,5 +1,5 @@
 import { convertToModelMessages, streamText, type UIMessage } from 'ai';
-import { openai } from '@/echo';
+import { openai, anthropic } from '@/echo';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -41,8 +41,12 @@ export async function POST(req: Request) {
       );
     }
 
+    // Determine provider based on model
+    const isAnthropicModel = model.startsWith('claude-');
+    const modelProvider = isAnthropicModel ? anthropic(model) : openai(model);
+
     const result = streamText({
-      model: openai(model),
+      model: modelProvider,
       system: `You are an AI assistant specializing in generating innovative application ideas for Merit System's Echo infrastructure.
 
 ## About Merit System's Echo Infrastructure
