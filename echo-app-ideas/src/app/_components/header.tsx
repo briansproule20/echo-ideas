@@ -37,13 +37,13 @@ const Header: FC<HeaderProps> = async ({
               href="/"
               className="text-gray-600 transition-colors hover:text-gray-900"
             >
-              Chat
+              Ideas
             </Link>
             <Link
-              href="/ideas"
+              href="/chat"
               className="text-gray-600 transition-colors hover:text-gray-900"
             >
-              Ideas
+              Chat
             </Link>
             <EchoAccount />
           </nav>

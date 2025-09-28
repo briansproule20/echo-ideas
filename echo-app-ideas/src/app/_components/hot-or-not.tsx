@@ -118,22 +118,6 @@ const HotOrNotComponent = () => {
   return (
     <div className="mx-auto flex h-full max-w-4xl flex-col p-6">
       <div className="relative mb-8 text-center">
-        <h1 className="mb-2 flex items-center justify-center gap-3 font-bold text-3xl text-gray-900">
-          <Image
-            src="/echo-ideas favicon.png"
-            alt="Echo Ideas"
-            width={40}
-            height={40}
-          />
-          Echo Ideas
-          <Image
-            src="/echo-ideas favicon.png"
-            alt="Echo Ideas"
-            width={40}
-            height={40}
-          />
-        </h1>
-
         {/* Fresh Ideas button in top right */}
         {ideas.length > 0 && !isLoading && (
           <button

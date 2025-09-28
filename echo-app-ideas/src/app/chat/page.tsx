@@ -1,8 +1,8 @@
-import HotOrNot from '@/app/_components/hot-or-not';
+import Chat from '@/app/_components/chat';
 import SignInButton from '@/app/_components/echo/sign-in-button';
 import { isSignedIn } from '@/echo';
 
-export default async function Home() {
+export default async function ChatPage() {
   const signedIn = await isSignedIn();
 
   if (!signedIn) {
@@ -11,10 +11,10 @@ export default async function Home() {
         <div className="w-full max-w-md space-y-8 text-center">
           <div>
             <h2 className="mt-6 font-bold text-3xl text-gray-900 tracking-tight dark:text-white">
-              Echo App Idea Generator
+              Echo Chat
             </h2>
             <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
-              Generate innovative app ideas powered by Echo's LLM infrastructure
+              Chat with AI models powered by Echo's LLM infrastructure
             </p>
           </div>
 
@@ -22,7 +22,7 @@ export default async function Home() {
             <SignInButton />
 
             <div className="text-gray-500 text-xs dark:text-gray-400">
-              Discover AI-powered applications with Echo's billing integration
+              Access AI-powered chat with Echo's billing integration
             </div>
           </div>
         </div>
@@ -30,5 +30,5 @@ export default async function Home() {
     );
   }
 
-  return <HotOrNot />;
+  return <Chat />;
 }
