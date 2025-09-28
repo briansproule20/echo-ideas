@@ -11,7 +11,7 @@ interface AppIdea {
   description: string;
   targetAudience: string;
   features: string[];
-  businessModel: string;
+  aiCapabilities: string;
 }
 
 const HotOrNotComponent = () => {
@@ -252,20 +252,6 @@ const HotOrNotComponent = () => {
                     : ''
                 }`}
               >
-                {/* Favorite button */}
-                <button
-                  onClick={() => toggleFavorite(currentIdea)}
-                  className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110 hover:shadow-xl"
-                >
-                  <Star
-                    className={`size-5 ${
-                      favoriteIds.has(currentIdea.id)
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-400'
-                    }`}
-                  />
-                </button>
-
                 <div className="h-full overflow-y-auto">
                   <h3 className="mb-4 font-bold text-2xl text-gray-900 leading-tight">
                     {currentIdea.title}
@@ -289,8 +275,8 @@ const HotOrNotComponent = () => {
                     </ul>
                   </div>
                   <div>
-                    <span className="font-semibold text-purple-600 text-base">Business Model</span>
-                    <p className="mt-1 text-gray-600 text-base leading-relaxed">{currentIdea.businessModel}</p>
+                    <span className="font-semibold text-purple-600 text-base">AI Capabilities</span>
+                    <p className="mt-1 text-gray-600 text-base leading-relaxed">{currentIdea.aiCapabilities}</p>
                   </div>
                 </div>
               </div>

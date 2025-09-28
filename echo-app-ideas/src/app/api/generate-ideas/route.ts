@@ -11,7 +11,7 @@ const AppIdeaSchema = z.object({
   description: z.string(),
   targetAudience: z.string(),
   features: z.array(z.string()),
-  businessModel: z.string(),
+  aiCapabilities: z.string(),
 });
 
 const IdeasResponseSchema = z.object({
@@ -42,35 +42,31 @@ export async function POST(req: Request) {
 
 ## About Merit System's Echo Infrastructure
 
-Echo is Merit System's revolutionary "billing in a box" platform that provides:
+Echo is Merit System's revolutionary platform that provides seamless AI integration:
 
-**LLM Integration & Billing:**
+**LLM Integration:**
 - Seamless integration with multiple Large Language Models (OpenAI, Anthropic, etc.)
-- Automatic usage tracking and billing for AI model consumption
-- Real-time cost monitoring and budget management
-- Pay-per-use pricing model for LLM calls
-- Built-in rate limiting and quota management
+- Access to cutting-edge AI capabilities including text generation, image creation, voice synthesis, and data analysis
+- Real-time AI model switching and optimization
 
 **Core Features:**
 - **Echo SDK**: Easy-to-use SDKs for React, Next.js, and other frameworks
-- **Authentication**: User account management with Echo billing integration
-- **Balance Management**: Top-up system, usage tracking, and billing transparency
+- **Authentication**: User account management with Echo integration
 - **Model Selection**: Access to multiple AI providers through a unified interface
 - **Developer Tools**: APIs, webhooks, and analytics for usage monitoring
 
 ## Your Task
 
-Generate exactly 10 diverse, innovative app ideas that leverage Echo's unique strengths. Each idea should:
+Generate exactly 10 diverse, innovative app ideas that leverage Echo's AI capabilities. Each idea should:
 
-1. **Heavily utilize AI models** for core functionality
-2. **Benefit from Echo's transparent billing** model
-3. **Solve real-world problems** with clear value propositions
-4. **Be practical and feasible** to build
-5. **Have clear monetization potential** through Echo's usage-based pricing
+1. **Heavily utilize AI models** for core functionality (text, image, voice, data analysis)
+2. **Solve real-world problems** with clear value propositions
+3. **Be practical and feasible** to build with modern AI
+4. **Showcase creative AI applications** that weren't possible before
 
-Focus on applications where Echo's "billing in a box" model creates unique opportunities - where traditional apps might struggle with AI costs, but Echo makes it viable.
+**IMPORTANT: Do not worry about billing, monetization, or costs. Echo's "billing in a box" handles all of that automatically. Focus purely on innovative AI-powered features and creative applications.**
 
-Make each idea distinct and appealing, covering different industries and use cases.`,
+Make each idea distinct and appealing, covering different industries and use cases with exciting AI capabilities.`,
       prompt: `Generate 10 completely unique and diverse Echo app ideas. Be highly creative and avoid repetitive patterns. Each idea must be from a different industry/sector and solve different problems.
 
 IMPORTANT: Make these ideas wildly different from each other. Vary:
@@ -84,8 +80,8 @@ For each idea, provide:
 - An engaging title (2-6 words)
 - A compelling description (2-3 sentences explaining the core concept)
 - Target audience (be very specific)
-- 4-6 key features that leverage Echo's capabilities in unique ways
-- Business model that works with Echo's usage-based pricing
+- 4-6 key features that showcase creative AI-powered functionality
+- AI capabilities section highlighting specific AI features like image generation, chat, voice synthesis, data analysis, etc.
 
 Think outside the box! Include unexpected combinations, niche markets, and innovative AI applications. No two ideas should feel similar.`,
       schema: IdeasResponseSchema,

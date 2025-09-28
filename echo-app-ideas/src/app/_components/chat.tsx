@@ -1,7 +1,7 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import { CopyIcon, MessageSquare } from 'lucide-react';
+import { CopyIcon, MessageSquare, Check } from 'lucide-react';
 import { Fragment, useState } from 'react';
 import { Action, Actions } from '@/components/ai-elements/actions';
 import {
@@ -59,12 +59,42 @@ const models = [
 
 const suggestions = [
   'I need a new idea for a Merit System\'s Echo App..',
+  'Turn this idea into a prompt I can give to cursor/claude',
 ];
 
 const ChatBotDemo = () => {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const { messages, sendMessage, status } = useChat();
+
+  const handleIdeaClick = (idea: any) => {
+    const prompt = `Help me flesh this idea out and create a plan of action:
+
+**${idea.title}**
+
+${idea.description}
+
+**Target Audience:** ${idea.targetAudience}
+
+**Key Features:**
+${idea.features.map((feature: string) => `• ${feature}`).join('\n')}
+
+**AI Capabilities:** ${idea.aiCapabilities}`;
+
+    setInput(prompt);
+  };
+
+  const handleCopyMessage = async (messageId: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedMessageId(messageId);
+      // Clear the copied state after 2 seconds
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy message:', error);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,19 +172,22 @@ const ChatBotDemo = () => {
                                 </Response>
                               </MessageContent>
                             </Message>
-                            {message.role === 'assistant' &&
-                              i === messages.length - 1 && (
-                                <Actions className="mt-2">
-                                  <Action
-                                    onClick={() =>
-                                      navigator.clipboard.writeText(part.text)
-                                    }
-                                    label="Copy"
-                                  >
+                            {message.role === 'assistant' && (
+                              <Actions className="mt-2">
+                                <Action
+                                  onClick={() =>
+                                    handleCopyMessage(`${message.id}-${i}`, part.text)
+                                  }
+                                  label={copiedMessageId === `${message.id}-${i}` ? "Copied!" : "Copy"}
+                                >
+                                  {copiedMessageId === `${message.id}-${i}` ? (
+                                    <Check className="size-3 text-green-600" />
+                                  ) : (
                                     <CopyIcon className="size-3" />
-                                  </Action>
-                                </Actions>
-                              )}
+                                  )}
+                                </Action>
+                              </Actions>
+                            )}
                           </Fragment>
                         );
                       case 'reasoning':
@@ -227,7 +260,7 @@ const ChatBotDemo = () => {
         </PromptInput>
 
         <div className="mt-8">
-          <FavoritedIdeas />
+          <FavoritedIdeas onIdeaClick={handleIdeaClick} />
         </div>
       </div>
     </div>

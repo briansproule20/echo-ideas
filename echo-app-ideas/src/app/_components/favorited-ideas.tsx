@@ -10,10 +10,14 @@ interface AppIdea {
   description: string;
   targetAudience: string;
   features: string[];
-  businessModel: string;
+  aiCapabilities: string;
 }
 
-const FavoritedIdeas = () => {
+interface FavoritedIdeasProps {
+  onIdeaClick?: (idea: AppIdea) => void;
+}
+
+const FavoritedIdeas = ({ onIdeaClick }: FavoritedIdeasProps) => {
   const [favorites, setFavorites] = useState<AppIdea[]>([]);
 
   useEffect(() => {
@@ -62,10 +66,14 @@ const FavoritedIdeas = () => {
         {favorites.map((idea) => (
           <div
             key={idea.id}
-            className="group relative rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-lg hover:border-gray-300"
+            onClick={() => onIdeaClick?.(idea)}
+            className="group relative cursor-pointer rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-lg hover:border-gray-300 hover:scale-[1.02]"
           >
             <button
-              onClick={() => removeFavorite(idea.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                removeFavorite(idea.id);
+              }}
               className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 opacity-0 transition-all hover:bg-red-200 group-hover:opacity-100"
             >
               <X className="size-3 text-red-600" />
@@ -98,6 +106,11 @@ const FavoritedIdeas = () => {
                     </li>
                   )}
                 </ul>
+              </div>
+
+              <div>
+                <span className="font-medium text-purple-600 text-xs">AI Capabilities:</span>
+                <p className="mt-1 text-gray-600 text-xs line-clamp-2">{idea.aiCapabilities}</p>
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ interface AppIdea {
   description: string;
   targetAudience: string;
   features: string[];
-  businessModel: string;
+  aiCapabilities: string;
 }
 
 const FAVORITES_KEY = 'echo-ideas-favorites';
