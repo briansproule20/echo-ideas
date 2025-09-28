@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Heart, X, RotateCcw } from 'lucide-react';
+import { Heart, X, RotateCcw, Star } from 'lucide-react';
 import Image from 'next/image';
+import { favoritesStorage } from '@/lib/favorites';
 
 interface AppIdea {
   id: string;
@@ -22,6 +23,7 @@ const HotOrNotComponent = () => {
     liked: [],
     disliked: [],
   });
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Load data from localStorage on mount
@@ -37,6 +39,10 @@ const HotOrNotComponent = () => {
         console.error('Error loading saved ideas:', error);
       }
     }
+
+    // Load favorited ideas
+    const favorites = favoritesStorage.getFavorites();
+    setFavoriteIds(new Set(favorites.map(fav => fav.id)));
   }, []);
 
   // Save to localStorage whenever state changes
@@ -92,6 +98,11 @@ const HotOrNotComponent = () => {
           ...prev,
           liked: [...prev.liked, currentIdea],
         }));
+        // Auto-favorite loved ideas
+        if (!favoriteIds.has(currentIdea.id)) {
+          favoritesStorage.addFavorite(currentIdea);
+          setFavoriteIds(prev => new Set(prev).add(currentIdea.id));
+        }
       } else {
         setResults(prev => ({
           ...prev,
@@ -110,6 +121,22 @@ const HotOrNotComponent = () => {
     setResults({ liked: [], disliked: [] });
     setSwipeDirection(null);
     localStorage.removeItem('echo-ideas-session');
+  };
+
+  const toggleFavorite = (idea: AppIdea) => {
+    const isFavorited = favoriteIds.has(idea.id);
+
+    if (isFavorited) {
+      favoritesStorage.removeFavorite(idea.id);
+      setFavoriteIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(idea.id);
+        return newSet;
+      });
+    } else {
+      favoritesStorage.addFavorite(idea);
+      setFavoriteIds(prev => new Set(prev).add(idea.id));
+    }
   };
 
   const currentIdea = ideas[currentIndex];
@@ -225,6 +252,20 @@ const HotOrNotComponent = () => {
                     : ''
                 }`}
               >
+                {/* Favorite button */}
+                <button
+                  onClick={() => toggleFavorite(currentIdea)}
+                  className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg transition-all hover:scale-110 hover:shadow-xl"
+                >
+                  <Star
+                    className={`size-5 ${
+                      favoriteIds.has(currentIdea.id)
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-400'
+                    }`}
+                  />
+                </button>
+
                 <div className="h-full overflow-y-auto">
                   <h3 className="mb-4 font-bold text-2xl text-gray-900 leading-tight">
                     {currentIdea.title}

@@ -37,6 +37,7 @@ import {
   SourcesTrigger,
 } from '@/components/ai-elements/sources';
 import { Suggestion, Suggestions } from '@/components/ai-elements/suggestion';
+import FavoritedIdeas from '@/app/_components/favorited-ideas';
 
 const models = [
   {
@@ -182,6 +183,7 @@ const ChatBotDemo = () => {
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
+
         <Suggestions>
           {suggestions.map(suggestion => (
             <Suggestion
@@ -223,6 +225,10 @@ const ChatBotDemo = () => {
             <PromptInputSubmit disabled={!input} status={status} />
           </PromptInputToolbar>
         </PromptInput>
+
+        <div className="mt-8">
+          <FavoritedIdeas />
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import Header from '@/app/_components/header';
+import DotBackground from '@/components/ui/dot-background';
 import { Providers } from '@/providers';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -40,8 +41,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex h-screen flex-col antialiased`}
       >
         <Providers>
-          <Header title="Echo App Idea Generator" />
-          <div className="min-h-0 flex-1">{children}</div>
+          <DotBackground className="flex h-screen flex-col">
+            <Header title="Echo App Idea Generator" />
+            <div className="min-h-0 flex-1">{children}</div>
+          </DotBackground>
         </Providers>
       </body>
     </html>
