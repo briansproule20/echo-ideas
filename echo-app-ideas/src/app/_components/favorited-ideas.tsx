@@ -67,16 +67,17 @@ const FavoritedIdeas = ({ onIdeaClick }: FavoritedIdeasProps) => {
           <div
             key={idea.id}
             onClick={() => onIdeaClick?.(idea)}
-            className="group relative cursor-pointer rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-lg hover:border-gray-300 hover:scale-[1.02]"
+            className="group relative cursor-pointer rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-lg hover:border-gray-300 hover:scale-[1.02] touch-manipulation"
           >
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 removeFavorite(idea.id);
               }}
-              className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 opacity-0 transition-all hover:bg-red-200 group-hover:opacity-100"
+              className="absolute right-2 top-2 flex h-7 w-7 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-red-100 opacity-100 sm:opacity-0 transition-all hover:bg-red-200 group-hover:opacity-100 active:scale-95"
+              title="Remove from favorites"
             >
-              <X className="size-3 text-red-600" />
+              <X className="size-4 sm:size-3 text-red-600" />
             </button>
 
             <h4 className="mb-2 font-semibold text-gray-900 text-sm line-clamp-2">

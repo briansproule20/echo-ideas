@@ -14,7 +14,7 @@ interface AppIdea {
   aiCapabilities: string;
 }
 
-const HotOrNotComponent = () => {
+const IdeasComponent = () => {
   const [ideas, setIdeas] = useState<AppIdea[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,10 @@ const HotOrNotComponent = () => {
   });
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [dragFeedback, setDragFeedback] = useState<'love' | 'discard' | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -91,6 +95,7 @@ const HotOrNotComponent = () => {
 
     const currentIdea = ideas[currentIndex];
     setSwipeDirection(direction);
+    setDragOffset({ x: 0, y: 0 });
 
     setTimeout(() => {
       if (direction === 'right') {
@@ -113,6 +118,104 @@ const HotOrNotComponent = () => {
       setCurrentIndex(prev => prev + 1);
       setSwipeDirection(null);
     }, 300);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStart({ x: touch.clientX, y: touch.clientY });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - dragStart.x;
+    const deltaY = touch.clientY - dragStart.y;
+
+    // Only handle horizontal swipes and prevent scroll when horizontal movement is dominant
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20;
+
+    if (isHorizontalSwipe) {
+      e.preventDefault(); // Prevent scrolling only for horizontal swipes
+      setDragOffset({ x: deltaX, y: deltaY });
+
+      // Update feedback based on drag direction
+      const feedbackThreshold = 50;
+      if (Math.abs(deltaX) > feedbackThreshold) {
+        setDragFeedback(deltaX > 0 ? 'love' : 'discard');
+      } else {
+        setDragFeedback(null);
+      }
+    } else {
+      // Allow normal scrolling for vertical movement
+      setDragOffset({ x: 0, y: 0 });
+      setDragFeedback(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+
+    setIsDragging(false);
+    setDragFeedback(null);
+
+    // Swipe threshold - adjust as needed
+    const swipeThreshold = 100;
+
+    if (Math.abs(dragOffset.x) > swipeThreshold) {
+      if (dragOffset.x > 0) {
+        handleSwipe('right');
+      } else {
+        handleSwipe('left');
+      }
+    } else {
+      // Snap back to center
+      setDragOffset({ x: 0, y: 0 });
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+
+    const deltaX = e.clientX - dragStart.x;
+    const deltaY = e.clientY - dragStart.y;
+
+    setDragOffset({ x: deltaX, y: deltaY });
+
+    // Update feedback based on drag direction
+    const feedbackThreshold = 50;
+    if (Math.abs(deltaX) > feedbackThreshold) {
+      setDragFeedback(deltaX > 0 ? 'love' : 'discard');
+    } else {
+      setDragFeedback(null);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+
+    setIsDragging(false);
+    setDragFeedback(null);
+
+    // Swipe threshold
+    const swipeThreshold = 100;
+
+    if (Math.abs(dragOffset.x) > swipeThreshold) {
+      if (dragOffset.x > 0) {
+        handleSwipe('right');
+      } else {
+        handleSwipe('left');
+      }
+    } else {
+      // Snap back to center
+      setDragOffset({ x: 0, y: 0 });
+    }
   };
 
   const resetSession = () => {
@@ -139,23 +242,24 @@ const HotOrNotComponent = () => {
     }
   };
 
+
   const currentIdea = ideas[currentIndex];
   const isComplete = currentIndex >= ideas.length && ideas.length > 0;
 
   return (
-    <div className="mx-auto flex h-full max-w-4xl flex-col p-6">
-      <div className="relative mb-8 text-center">
-        {/* Fresh Ideas button in top right */}
-        {ideas.length > 0 && !isLoading && (
+    <div className="mx-auto flex h-full max-w-4xl flex-col p-4 sm:p-6">
+      {/* Fresh Ideas button - positioned at top right */}
+      {ideas.length > 0 && !isLoading && (
+        <div className="mb-4 sm:mb-8 flex justify-end">
           <button
             onClick={resetSession}
-            className="absolute right-0 top-0 flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white transition-all hover:bg-purple-700"
+            className="flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 sm:px-4 sm:py-2 font-semibold text-white text-sm sm:text-base transition-all hover:bg-purple-700"
           >
-            <RotateCcw className="size-4" />
+            <RotateCcw className="size-3 sm:size-4" />
             Fresh Ideas
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {ideas.length === 0 && !isLoading ? (
         <div className="flex flex-1 flex-col items-center justify-center">
@@ -224,48 +328,85 @@ const HotOrNotComponent = () => {
             </div>
           </div>
 
-          <div className="relative mb-8 h-[500px] w-[600px]">
-            {/* Left side red X indicator - clickable */}
+          <div className="relative mb-8 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
+            {/* Left side red X indicator - clickable - hidden on mobile */}
             <button
               onClick={() => handleSwipe('left')}
-              className="absolute -left-20 top-1/2 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full bg-red-100 shadow-lg transition-all hover:bg-red-200 hover:scale-110"
+              className="absolute -left-12 sm:-left-16 md:-left-20 top-1/2 z-10 hidden sm:flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 -translate-y-1/2 items-center justify-center rounded-full bg-red-100 shadow-lg transition-all hover:bg-red-200 hover:scale-110"
             >
-              <X className="size-8 text-red-600" />
+              <X className="size-6 sm:size-7 md:size-8 text-red-600" />
             </button>
 
-            {/* Right side green heart indicator - clickable */}
+            {/* Right side green heart indicator - clickable - hidden on mobile */}
             <button
               onClick={() => handleSwipe('right')}
-              className="absolute -right-20 top-1/2 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full bg-green-100 shadow-lg transition-all hover:bg-green-200 hover:scale-110"
+              className="absolute -right-12 sm:-right-16 md:-right-20 top-1/2 z-10 hidden sm:flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 -translate-y-1/2 items-center justify-center rounded-full bg-green-100 shadow-lg transition-all hover:bg-green-200 hover:scale-110"
             >
-              <Heart className="size-8 text-green-600" />
+              <Heart className="size-6 sm:size-7 md:size-8 text-green-600" />
             </button>
 
             {currentIdea && (
               <div
                 ref={cardRef}
-                className={`absolute inset-0 cursor-grab rounded-2xl bg-white border border-gray-100 p-8 shadow-2xl transition-transform duration-300 ${
+                className={`relative w-full h-[500px] sm:h-[520px] md:h-[550px] cursor-grab rounded-2xl bg-white border border-gray-100 p-4 sm:p-6 md:p-8 shadow-2xl transition-transform duration-300 select-none ${
                   swipeDirection === 'right'
                     ? 'translate-x-96 rotate-12'
                     : swipeDirection === 'left'
                     ? '-translate-x-96 -rotate-12'
+                    : isDragging
+                    ? 'transition-none'
+                    : ''
+                } ${
+                  dragFeedback === 'love'
+                    ? 'bg-green-50 border-green-200'
+                    : dragFeedback === 'discard'
+                    ? 'bg-red-50 border-red-200'
                     : ''
                 }`}
+                style={{
+                  transform: isDragging && !swipeDirection
+                    ? `translate(${dragOffset.x}px, ${dragOffset.y * 0.1}px) rotate(${dragOffset.x * 0.1}deg)`
+                    : undefined
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
               >
+
+                {/* Drag feedback overlay */}
+                {dragFeedback && (
+                  <div className={`absolute top-4 right-4 pointer-events-none transition-opacity duration-200`}>
+                    <div className={`flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-2 rounded-full font-bold text-xs sm:text-sm ${
+                      dragFeedback === 'love'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-red-500 text-white'
+                    }`}>
+                      {dragFeedback === 'love' ? (
+                        <><Heart className="size-3 sm:size-4" /> LOVE</>
+                      ) : (
+                        <><X className="size-3 sm:size-4" /> PASS</>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div className="h-full overflow-y-auto">
-                  <h3 className="mb-4 font-bold text-2xl text-gray-900 leading-tight">
+                  <h3 className="mb-3 sm:mb-4 font-bold text-xl sm:text-2xl text-gray-900 leading-tight">
                     {currentIdea.title}
                   </h3>
-                  <p className="mb-6 text-gray-700 text-base leading-relaxed">
+                  <p className="mb-4 sm:mb-6 text-gray-700 text-sm sm:text-base leading-relaxed">
                     {currentIdea.description}
                   </p>
-                  <div className="mb-4">
-                    <span className="font-semibold text-purple-600 text-base">Target Audience</span>
-                    <p className="mt-1 text-gray-600 text-base">{currentIdea.targetAudience}</p>
+                  <div className="mb-3 sm:mb-4">
+                    <span className="font-semibold text-purple-600 text-sm sm:text-base">Target Audience</span>
+                    <p className="mt-1 text-gray-600 text-sm sm:text-base">{currentIdea.targetAudience}</p>
                   </div>
-                  <div className="mb-4">
-                    <span className="font-semibold text-purple-600 text-base">Key Features</span>
-                    <ul className="mt-2 space-y-1 text-gray-600 text-base">
+                  <div className="mb-3 sm:mb-4">
+                    <span className="font-semibold text-purple-600 text-sm sm:text-base">Key Features</span>
+                    <ul className="mt-2 space-y-1 text-gray-600 text-sm sm:text-base">
                       {currentIdea.features.slice(0, 3).map((feature, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2 font-bold text-purple-500">•</span>
@@ -275,12 +416,32 @@ const HotOrNotComponent = () => {
                     </ul>
                   </div>
                   <div>
-                    <span className="font-semibold text-purple-600 text-base">AI Capabilities</span>
-                    <p className="mt-1 text-gray-600 text-base leading-relaxed">{currentIdea.aiCapabilities}</p>
+                    <span className="font-semibold text-purple-600 text-sm sm:text-base">AI Capabilities</span>
+                    <p className="mt-1 text-gray-600 text-sm sm:text-base leading-relaxed">{currentIdea.aiCapabilities}</p>
                   </div>
                 </div>
+
+
               </div>
             )}
+          </div>
+
+          {/* Mobile action buttons below the card */}
+          <div className="flex justify-center gap-8 mt-6 sm:hidden">
+            <button
+              onClick={() => handleSwipe('left')}
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-red-100 shadow-lg transition-all active:scale-95 hover:bg-red-200"
+              title="Pass"
+            >
+              <X className="size-7 text-red-600" />
+            </button>
+            <button
+              onClick={() => handleSwipe('right')}
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 shadow-lg transition-all active:scale-95 hover:bg-green-200"
+              title="Love"
+            >
+              <Heart className="size-7 text-green-600" />
+            </button>
           </div>
         </div>
       )}
@@ -288,4 +449,4 @@ const HotOrNotComponent = () => {
   );
 };
 
-export default HotOrNotComponent;
+export default IdeasComponent;

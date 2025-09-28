@@ -1,5 +1,5 @@
 import { generateObject } from 'ai';
-import { anthropic } from '@/echo';
+import { anthropic, isSignedIn } from '@/echo';
 import { z } from 'zod';
 
 // Allow streaming responses up to 30 seconds
@@ -20,6 +20,21 @@ const IdeasResponseSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    // Check if user is signed in
+    const signedIn = await isSignedIn();
+    if (!signedIn) {
+      return new Response(
+        JSON.stringify({
+          error: 'Unauthorized',
+          message: 'User must be signed in to generate ideas',
+        }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
     const { model }: { model: string } = await req.json();
 
     // Validate required parameters

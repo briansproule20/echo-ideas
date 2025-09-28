@@ -1,4 +1,4 @@
-import HotOrNot from '@/app/_components/hot-or-not';
+import Ideas from '@/app/_components/ideas';
 import SignInButton from '@/app/_components/echo/sign-in-button';
 import { isSignedIn } from '@/echo';
 
@@ -30,5 +30,5 @@ export default async function Home() {
     );
   }
 
-  return <HotOrNot />;
+  return <Ideas />;
 }

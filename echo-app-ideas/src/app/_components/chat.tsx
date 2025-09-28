@@ -1,7 +1,7 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import { CopyIcon, MessageSquare, Check } from 'lucide-react';
+import { CopyIcon, MessageSquare, Check, Trash2 } from 'lucide-react';
 import { Fragment, useState } from 'react';
 import { Action, Actions } from '@/components/ai-elements/actions';
 import {
@@ -14,6 +14,7 @@ import { Loader } from '@/components/ai-elements/loader';
 import { Message, MessageContent } from '@/components/ai-elements/message';
 import {
   PromptInput,
+  PromptInputButton,
   PromptInputModelSelect,
   PromptInputModelSelectContent,
   PromptInputModelSelectItem,
@@ -122,10 +123,14 @@ ${idea.features.map((feature: string) => `• ${feature}`).join('\n')}
     );
   };
 
+  const handleClearInput = () => {
+    setInput('');
+  };
+
   return (
     <div className="mx-auto flex h-full max-w-4xl flex-col p-6">
       <div className="flex h-full min-h-0 flex-col">
-        <Conversation className="relative min-h-0 w-full flex-1 overflow-hidden">
+        <Conversation className="relative min-h-0 w-full flex-1">
           <ConversationContent>
             {messages.length === 0 ? (
               <ConversationEmptyState
@@ -255,7 +260,18 @@ ${idea.features.map((feature: string) => `• ${feature}`).join('\n')}
                 </PromptInputModelSelectContent>
               </PromptInputModelSelect>
             </PromptInputTools>
-            <PromptInputSubmit disabled={!input} status={status} />
+            <div className="flex items-center gap-1">
+              {input && (
+                <PromptInputButton
+                  onClick={handleClearInput}
+                  variant="ghost"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Trash2 className="size-4" />
+                </PromptInputButton>
+              )}
+              <PromptInputSubmit disabled={!input} status={status} />
+            </div>
           </PromptInputToolbar>
         </PromptInput>
 

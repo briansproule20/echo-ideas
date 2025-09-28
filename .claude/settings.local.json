@@ -4,7 +4,11 @@
       "Bash(npx echo-start@latest:*)",
       "Bash(npm install)",
       "Bash(cd:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(curl -X POST http://localhost:3005/api/generate-ideas -H \"Content-Type: application/json\" -d '{\"\"model\"\": \"\"claude-3-haiku-20240307\"\"}')",
+      "Bash(lsof:*)",
+      "Bash(npm run dev:*)",
+      "Bash(kill:*)"
     ],
     "deny": [],
     "ask": []

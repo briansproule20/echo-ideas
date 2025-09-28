@@ -21,18 +21,21 @@ const Header: FC<HeaderProps> = async ({
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0 flex-1">
             <Image
               src="/echo-ideas favicon.png"
               alt="Echo Ideas"
               width={32}
               height={32}
-              className="mr-3"
+              className="mr-2 flex-shrink-0"
             />
-            <h1 className="font-semibold text-gray-900 text-xl">{title}</h1>
+            <h1 className="font-semibold text-gray-900 text-sm md:text-xl">
+              <span className="block md:hidden">Echo</span>
+              <span className="hidden md:block">{title}</span>
+            </h1>
           </div>
 
-          <nav className="flex items-center space-x-6">
+          <nav className="flex items-center space-x-3 md:space-x-6 flex-shrink-0">
             <Link
               href="/"
               className="text-gray-600 transition-colors hover:text-gray-900"

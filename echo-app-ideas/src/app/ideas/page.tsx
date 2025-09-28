@@ -1,13 +1,13 @@
-import HotOrNotComponent from '@/app/_components/hot-or-not';
+import IdeasComponent from '@/app/_components/ideas';
 import { isSignedIn } from '@/echo';
 import { redirect } from 'next/navigation';
 
-export default async function HotOrNotPage() {
+export default async function IdeasPage() {
   const signedIn = await isSignedIn();
 
   if (!signedIn) {
     redirect('/');
   }
 
-  return <HotOrNotComponent />;
+  return <IdeasComponent />;
 }
