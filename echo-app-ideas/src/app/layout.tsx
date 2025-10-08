@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: 'Echo Ideas',
   description: 'AI-powered chat application with Echo billing integration',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icon.svg',
   },
 };
 
