@@ -24,6 +24,7 @@ const IdeasComponent = () => {
     disliked: [],
   });
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [customPrompt, setCustomPrompt] = useState('');
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -72,6 +73,7 @@ const IdeasComponent = () => {
         },
         body: JSON.stringify({
           model: 'claude-3-haiku-20240307',
+          customPrompt: customPrompt.trim() || undefined,
         }),
       });
 
@@ -263,13 +265,31 @@ const IdeasComponent = () => {
 
       {ideas.length === 0 && !isLoading ? (
         <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="mb-8 text-center">
+          <div className="mb-8 w-full max-w-2xl text-center">
             <h2 className="mb-4 font-semibold text-2xl text-gray-800">
               Ready to discover amazing Echo app ideas?
             </h2>
-            <p className="mb-8 text-gray-600">
+            <p className="mb-6 text-gray-600">
               Click the button below to generate 10 unique app ideas powered by Echo's infrastructure
             </p>
+            
+            {/* Custom prompt input */}
+            <div className="mb-6">
+              <label htmlFor="custom-prompt" className="mb-2 block font-medium text-gray-700 text-left text-sm">
+                Custom Prompt (Optional)
+              </label>
+              <textarea
+                id="custom-prompt"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="e.g., 'Generate ideas for healthcare professionals' or 'Focus on productivity apps for students'"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                rows={3}
+              />
+              <p className="mt-2 text-gray-500 text-left text-xs">
+                Add specific requirements or focus areas for the AI to consider
+              </p>
+            </div>
           </div>
           <button
             onClick={generateIdeas}

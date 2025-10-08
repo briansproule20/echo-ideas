@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { model }: { model: string } = await req.json();
+    const { model, customPrompt }: { model: string; customPrompt?: string } = await req.json();
 
     // Validate required parameters
     if (!model) {
@@ -84,6 +84,7 @@ Generate exactly 10 diverse, innovative app ideas that leverage Echo's AI capabi
 Make each idea distinct and appealing, covering different industries and use cases with exciting AI capabilities.`,
       prompt: `Generate 10 completely unique and diverse Echo app ideas. Be highly creative and avoid repetitive patterns. Each idea must be from a different industry/sector and solve different problems.
 
+${customPrompt ? `ADDITIONAL REQUIREMENTS: ${customPrompt}\n` : ''}
 IMPORTANT: Make these ideas wildly different from each other. Vary:
 - Industries (healthcare, education, entertainment, finance, retail, gaming, agriculture, sports, art, science, etc.)
 - Target audiences (ages, professions, demographics)
