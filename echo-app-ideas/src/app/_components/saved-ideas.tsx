@@ -3,7 +3,15 @@
 import { useState, useEffect } from 'react';
 import { Heart, MessageSquare, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import type { AppIdea } from '@/types/idea';
+
+interface AppIdea {
+  id: string;
+  title: string;
+  description: string;
+  targetAudience: string;
+  features: string[];
+  aiCapabilities: string;
+}
 
 const SavedIdeas = () => {
   const [savedIdeas, setSavedIdeas] = useState<AppIdea[]>([]);
