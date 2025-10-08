@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer hexagon - darker brown -->
+  <path d="M256 50 L450 156 L450 356 L256 462 L62 356 L62 156 Z" fill="#5D3A1A"/>
+  
+  <!-- Left face -->
+  <path d="M256 50 L62 156 L62 356 L256 256 Z" fill="#8B5A2B"/>
+  
+  <!-- Right face -->
+  <path d="M256 50 L450 156 L450 356 L256 256 Z" fill="#6B4423"/>
+  
+  <!-- Inner hexagon - orange -->
+  <path d="M256 150 L350 206 L350 306 L256 362 L162 306 L162 206 Z" fill="#FF8C42"/>
+  
+  <!-- Inner left face -->
+  <path d="M256 150 L162 206 L162 306 L256 256 Z" fill="#FFA55F"/>
+  
+  <!-- Inner right face -->
+  <path d="M256 150 L350 206 L350 306 L256 256 Z" fill="#E67A2E"/>
+  
+  <!-- Bottom face of outer -->
+  <path d="M256 462 L62 356 L256 256 L450 356 Z" fill="#4A2F17"/>
+  
+  <!-- Bottom face of inner -->
+  <path d="M256 362 L162 306 L256 256 L350 306 Z" fill="#CC6B2E"/>
+</svg>
+
