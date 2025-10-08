@@ -19,14 +19,7 @@ export const metadata: Metadata = {
   title: 'Echo Ideas',
   description: 'AI-powered chat application with Echo billing integration',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
-  },
-  openGraph: {
-    title: 'Echo Ideas',
-    description: 'AI-powered chat application with Echo billing integration',
-    images: ['/favicon.svg'],
+    icon: '/favicon.ico',
   },
 };
 
