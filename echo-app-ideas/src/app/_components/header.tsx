@@ -23,7 +23,7 @@ const Header: FC<HeaderProps> = async ({
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center min-w-0 flex-1">
             <Image
-              src="/echo-ideas favicon.png"
+              src="/icon.png"
               alt="Echo Ideas"
               width={32}
               height={32}
