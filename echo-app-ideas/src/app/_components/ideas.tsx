@@ -78,7 +78,15 @@ const IdeasComponent = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate ideas');
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          throw new Error(`Server error: ${response.status} - ${errorText.substring(0, 200)}`);
+        }
+        throw new Error(errorData.details || errorData.message || 'Failed to generate ideas');
       }
 
       const data = await response.json();
@@ -87,6 +95,7 @@ const IdeasComponent = () => {
       setResults({ liked: [], disliked: [] });
     } catch (error) {
       console.error('Error generating ideas:', error);
+      alert(`Failed to generate ideas: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -255,7 +264,7 @@ const IdeasComponent = () => {
         <div className="mb-4 sm:mb-8 flex justify-end">
           <button
             onClick={resetSession}
-            className="flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 sm:px-4 sm:py-2 font-semibold text-white text-sm sm:text-base transition-all hover:bg-purple-700"
+            className="flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 sm:px-4 sm:py-2 font-semibold text-white text-sm sm:text-base transition-all hover:bg-amber-600"
           >
             <RotateCcw className="size-3 sm:size-4" />
             Fresh Ideas
@@ -266,47 +275,53 @@ const IdeasComponent = () => {
       {ideas.length === 0 && !isLoading ? (
         <div className="flex flex-1 flex-col items-center justify-center">
           <div className="mb-8 w-full max-w-2xl text-center">
-            <h2 className="mb-4 font-semibold text-2xl text-gray-800">
-              Ready to discover amazing Echo app ideas?
-            </h2>
-            <p className="mb-6 text-gray-600">
+                <h2 className="mb-4 font-semibold text-2xl text-gray-800 dark:text-white">
+                  Ready to discover amazing Echo app ideas?
+                </h2>
+                <p className="mb-6 text-gray-600 dark:text-gray-400">
               Click the button below to generate 10 unique app ideas powered by Echo's infrastructure
             </p>
             
             {/* Custom prompt input */}
             <div className="mb-6">
-              <label htmlFor="custom-prompt" className="mb-2 block font-medium text-gray-700 text-left text-sm">
+              <label htmlFor="custom-prompt" className="mb-2 block font-medium text-gray-700 dark:text-gray-300 text-left text-sm">
                 Custom Prompt (Optional)
               </label>
               <textarea
                 id="custom-prompt"
                 value={customPrompt}
                 onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder="e.g., 'Generate ideas for healthcare professionals' or 'Focus on productivity apps for students'"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    generateIdeas();
+                  }
+                }}
+                placeholder="e.g., 'Generate ideas for healthcare professionals' or 'Focus on productivity apps for students' (Press Cmd/Ctrl+Enter to generate)"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                 rows={3}
               />
-              <p className="mt-2 text-gray-500 text-left text-xs">
+              <p className="mt-2 text-gray-500 dark:text-gray-400 text-left text-xs">
                 Add specific requirements or focus areas for the AI to consider
               </p>
             </div>
           </div>
           <button
             onClick={generateIdeas}
-            className="flex items-center gap-2 rounded-lg bg-purple-600 px-8 py-4 font-semibold text-white transition-all hover:bg-purple-700 hover:scale-105"
+            className="flex items-center gap-2 rounded-lg bg-amber-500 px-8 py-4 font-semibold text-white transition-all hover:bg-amber-600 hover:scale-105"
           >
             Generate 10 Ideas
           </button>
         </div>
       ) : isLoading ? (
         <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="mb-4 h-16 w-16 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
-          <p className="text-gray-600">Generating amazing ideas...</p>
+          <div className="mb-4 h-16 w-16 animate-spin rounded-full border-4 border-amber-200 dark:border-amber-900 border-t-amber-500"></div>
+          <p className="text-gray-600 dark:text-gray-400">Generating amazing ideas...</p>
         </div>
       ) : isComplete ? (
         <div className="flex flex-1 flex-col items-center justify-center">
           <div className="mb-8 text-center">
-            <h2 className="mb-4 font-semibold text-2xl text-gray-800">
+            <h2 className="mb-4 font-semibold text-2xl text-gray-800 dark:text-white">
               Session Complete! 🎉
             </h2>
             <div className="mb-6 grid grid-cols-2 gap-6">
@@ -328,7 +343,7 @@ const IdeasComponent = () => {
           </div>
           <button
             onClick={resetSession}
-            className="flex items-center gap-2 rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition-all hover:bg-purple-700"
+            className="flex items-center gap-2 rounded-lg bg-amber-500 px-6 py-3 font-semibold text-white transition-all hover:bg-amber-600"
           >
             <RotateCcw className="size-5" />
             Generate New Ideas
@@ -336,13 +351,13 @@ const IdeasComponent = () => {
         </div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="mb-4 text-center">
-            <p className="text-gray-600">
-              {currentIndex + 1} of {ideas.length}
-            </p>
+              <div className="mb-4 text-center">
+                <p className="text-gray-600 dark:text-gray-400">
+                  {currentIndex + 1} of {ideas.length}
+                </p>
             <div className="mt-2 h-2 w-64 rounded-full bg-gray-200">
               <div
-                className="h-2 rounded-full bg-purple-600 transition-all duration-300"
+                className="h-2 rounded-full bg-amber-500 transition-all duration-300"
                 style={{ width: `${((currentIndex + 1) / ideas.length) * 100}%` }}
               ></div>
             </div>
